@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        NDC Control Tower
+    </title>
+
+    <!-- Bootstrap 5 -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+        rel="stylesheet">
+
+    <!-- Google Font -->
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Datatable -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
+
+    <!-- Custom CSS -->
+
+    <link
+        rel="stylesheet"
+        href="css/style.css">
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+</head>
+
+<body>
+
+<!-- ===========================
+LOADING
+=========================== -->
+
+<div id="loadingScreen">
+
+    <div class="loader"></div>
+
+    <h3>
+
+        NDC CONTROL TOWER
+
+    </h3>
+
+    <p>
+
+        Shipment Tracking Portal
+
+    </p>
+
+</div>
+
+<!-- ===========================
+HEADER
+=========================== -->
+
+<header class="main-header">
+
+    <div class="header-left">
+
+        <img
+            src="assets/logo-kawanlama.png"
+            class="logo">
+
+        <div>
+
+            <h2>
+
+                NDC CONTROL TOWER
+
+            </h2>
+
+            <div class="portal-subtitle">
+
+                Shipment Tracking Portal
+
+            </div>
+
+            <small>
+
+                ONE SOURCE OF TRUTH FOR STORE SHIPMENT
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="header-right">
+
+        <div class="status-online">
+
+            <span class="online-dot"></span>
+
+            CONNECTED
+
+        </div>
+
+        <div>
+
+            Version
+
+            <strong>
+
+                1.0.0
+
+            </strong>
+
+        </div>
+
+        <div>
+
+            Last Sync
+
+            <br>
+
+            <span id="clock">
+
+                Loading...
+
+            </span>
+
+        </div>
+
+    </div>
+
+</header>
+
+<!-- ===========================
+MENU
+=========================== -->
+
+<!-- ===========================
+RUNNING INFORMATION
+=========================== -->
+
+<div class="container-fluid mt-2">
+
+    <div class="ticker shadow-sm">
+
+        <div class="ticker-title">
+
+            <i class="bi bi-broadcast"></i>
+
+            RUNNING INFORMATION
+
+        </div>
+
+        <div class="ticker-wrap">
+
+            <div id="runningText" class="ticker-content">
+
+SCM LEBIH KOMPAK • LEBIH TANGGUH • LEBIH KUAT • SCM LEBIH KOMPAK • LEBIH TANGGUH • LEBIH KUAT
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+CONTENT
+=========================== -->
+
+<!-- ===========================================================
+KPI
+=========================================================== -->
+
+<div class="container-fluid mt-4">
+
+    <div class="row">
+
+        <!-- KPI 1 -->
+        <div class="col">
+
+            <div class="kpi-card">
+
+                <div class="icon">📦</div>
+
+                <div>
+
+                    <h6>Total Order</h6>
+
+                    <h2 id="kpiOrder">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- KPI Shipment -->
+        <div class="col">
+
+            <div class="kpi-card info">
+
+                <div class="icon">🚛</div>
+
+                <div>
+
+                    <h6>Total Shipment</h6>
+
+                    <h2 id="kpiShipment">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- KPI 3 -->
+        <div class="col">
+
+            <div class="kpi-card warning">
+
+                <div class="icon">⏳</div>
+
+                <div>
+
+                    <h6>NDC → Port</h6>
+
+                    <h2 id="kpiPending">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- KPI 4 -->
+        <div class="col">
+
+            <div class="kpi-card purple">
+
+                <div class="icon">🚢</div>
+
+                <div>
+
+                    <h6>On Sailing</h6>
+
+                    <h2 id="kpiSailing">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- KPI 5 -->
+        <div class="col">
+
+            <div class="kpi-card success">
+
+                <div class="icon">✅</div>
+
+                <div>
+
+                    <h6>Delivered</h6>
+
+                    <h2 id="kpiDelivered">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- KPI 6 -->
+        <div class="col">
+
+            <div class="kpi-card danger">
+
+                <div class="icon">⚠</div>
+
+                <div>
+
+                    <h6>WaitingDooring</h6>
+
+                    <h2 id="kpiWaitingDooring">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- =======================================================
+FILTER PANEL
+======================================================= -->
+
+<div class="row mt-4">
+
+    <div class="col-12">
+
+        <div class="card shadow-sm border-0 filter-card">
+
+            <div class="card-body">
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-lg-2 col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Periode Awal
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            id="startDate">
+
+                    </div>
+
+                    <div class="col-lg-2 col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Periode Akhir
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            id="endDate">
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <label class="form-label fw-semibold">
+                            Region
+                        </label>
+
+                        <select
+                            id="filterRegion"
+                            class="form-select">
+
+                            <option value="">
+                                Semua Region
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <label class="form-label fw-semibold">
+                            Store
+                        </label>
+
+                        <select
+                            id="filterStore"
+                            class="form-select">
+
+                            <option value="">
+                                Semua Store
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <label class="form-label fw-semibold">
+                            Status
+                        </label>
+
+                        <select
+                            id="filterStatus"
+                            class="form-select">
+
+                            <option value="">
+                                Semua Status
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="row align-items-center">
+
+                    <div class="col-lg-8">
+
+                        <button
+                            class="btn btn-primary"
+                            id="btnSearch">
+
+                            <i class="bi bi-search"></i>
+
+                            Tampilkan Data
+
+                        </button>
+
+                        <button
+                            class="btn btn-secondary"
+                            id="btnReset">
+
+                            <i class="bi bi-arrow-clockwise"></i>
+
+                            Reset
+
+                        </button>
+
+                        <button
+                            class="btn btn-success"
+                            id="btnExportExcel">
+
+                            <i class="bi bi-file-earmark-excel"></i>
+
+                            Excel
+
+                        </button>
+
+                        <button
+                            class="btn btn-danger"
+                            id="btnExportPdf">
+
+                            <i class="bi bi-file-earmark-pdf"></i>
+
+                            PDF
+
+                        </button>
+
+                        <button
+                            class="btn btn-dark"
+                            id="btnPrint">
+
+                            <i class="bi bi-printer"></i>
+
+                            Print
+
+                        </button>
+
+                    </div>
+
+                    <div class="col-lg-4 text-end">
+
+                        <div class="small text-muted">
+
+                            Last Update
+
+                        </div>
+
+                        <div
+                            id="lastUpdate"
+                            class="fw-bold">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =======================================================
+TRACK SHIPMENT
+======================================================= -->
+
+<div class="row mt-4">
+
+    <div class="col-12">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-search"></i>
+
+                    Shipment Tracking
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-3">
+
+                    <div class="col-lg-10">
+
+                        <input
+                            type="text"
+                            id="txtTracking"
+                            class="form-control form-control-lg"
+                            placeholder="Masukkan Nomor OD / LC / SI / Container / RT">
+
+                    </div>
+
+                    <div class="col-lg-2 d-grid">
+
+                        <button
+                            id="btnTracking"
+                            class="btn btn-primary btn-lg">
+
+                            <i class="bi bi-search"></i>
+
+                            Track
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =======================================================
+NOT FOUND PANEL
+======================================================= -->
+
+<div id="notFoundPanel"
+     class="card border-0 shadow-sm mt-4"
+     style="display:none;">
+
+    <div class="card-body text-center py-5">
+
+        <div class="display-1 mb-3">
+            📦
+        </div>
+
+        <h3 class="text-warning">
+
+            Order Dalam Proses Planning
+
+        </h3>
+
+        <p class="text-muted mb-4">
+
+            Nomor yang Anda masukkan belum ditemukan
+            pada data shipment.
+
+        </p>
+
+        <div class="alert alert-warning">
+
+            Kemungkinan order masih dalam proses
+            <strong>Planning NDC Sidoarjo</strong>.
+
+            <br><br>
+
+            Silakan menghubungi Planner
+            untuk informasi lebih lanjut.
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =======================================================
+SHIPMENT INFORMATION
+======================================================= -->
+
+<!-- =======================================================
+SHIPMENT COMMAND CENTER
+======================================================= -->
+
+<div id="shipmentPanel"
+     class="card shadow-sm border-0 mt-4"
+     style="display:none;">
+
+    <div class="card-header bg-primary text-white">
+
+        <h5 class="mb-0">
+            <i class="bi bi-truck"></i>
+            Shipment Command Center
+        </h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <!-- Row 1 -->
+
+        <div class="row g-4">
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    Receive No
+                </small>
+
+                <h5 id="infoReceive"
+                    class="fw-bold mb-0">
+                    -
+                </h5>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    LC
+                </small>
+
+                <h5 id="infoLC"
+                    class="fw-bold mb-0">
+                    -
+                </h5>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    Status
+                </small>
+
+                <h5 id="infoStatus"
+                    class="mb-0">
+                    -
+                </h5>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    Container
+                </small>
+
+                <h5 id="infoContainer"
+                    class="fw-bold mb-0">
+                    -
+                </h5>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <!-- Row 2 -->
+
+        <div class="row g-4">
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    Store
+                </small>
+
+                <h6 id="infoStore"
+                    class="mb-0">
+                    -
+                </h6>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    City
+                </small>
+
+                <h6 id="infoCity"
+                    class="mb-0">
+                    -
+                </h6>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    Vessel
+                </small>
+
+                <h6 id="infoVessel"
+                    class="mb-0">
+                    -
+                </h6>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    Shipping Line
+                </small>
+
+                <h6 id="infoShippingLine"
+                    class="mb-0">
+                    -
+                </h6>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+                <!-- Row 3 -->
+
+        <div class="row g-4">
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    Health Score
+                </small>
+
+                <h5 id="summaryHealth"
+                    class="fw-bold text-success">
+                    -
+                </h5>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    Lead Time
+                </small>
+
+                <h5 id="summaryLeadtime"
+                    class="fw-bold text-primary">
+                    -
+                </h5>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    Total SKU
+                </small>
+
+                <h5 id="summarySKU"
+                    class="fw-bold">
+                    0
+                </h5>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <small class="text-muted text-uppercase">
+                    Total Qty
+                </small>
+
+                <h5 id="summaryQty"
+                    class="fw-bold">
+                    0
+                </h5>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =======================================================
+OPERATIONAL ALERT
+======================================================= -->
+
+<div id="alertPanel"
+     class="card shadow-sm border-0 mt-4"
+     style="display:none;">
+
+    <div class="card-header bg-warning">
+
+        <h5 class="mb-0">
+
+            ⚠ Operational Alert
+
+        </h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <div id="alertContent"
+             class="fw-semibold">
+
+            -
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =======================================================
+JOURNEY ENTERPRISE
+======================================================= -->
+
+<div id="journeyPanel"
+     class="card shadow-sm border-0 mt-4"
+     style="display:none;">
+
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">
+            🛣 Shipment Journey
+        </h5>
+    </div>
+
+    <div class="card-body">
+
+        <div id="journeyTimeline" class="journey-timeline">
+
+            <!-- CHECK IN -->
+            <div class="journey-step" id="jCheckin">
+                <div class="journey-circle">
+                    <i class="bi bi-box-arrow-in-down"></i>
+                </div>
+                <div class="journey-title">CHECK IN</div>
+                <small id="dCheckin">-</small>
+            </div>
+
+            <div class="journey-line"></div>
+
+            <!-- OPEN -->
+            <div class="journey-step" id="jOpen">
+                <div class="journey-circle">
+                    <i class="bi bi-unlock"></i>
+                </div>
+                <div class="journey-title">OPEN</div>
+                <small id="dOpen">-</small>
+            </div>
+
+            <div class="journey-line"></div>
+
+            <!-- CLOSE -->
+            <div class="journey-step" id="jClose">
+                <div class="journey-circle">
+                    <i class="bi bi-lock"></i>
+                </div>
+                <div class="journey-title">CLOSE</div>
+                <small id="dClose">-</small>
+            </div>
+
+            <div class="journey-line"></div>
+
+            <!-- CHECK OUT -->
+            <div class="journey-step" id="jCheckout">
+                <div class="journey-circle">
+                    <i class="bi bi-box-arrow-up"></i>
+                </div>
+                <div class="journey-title">CHECK OUT</div>
+                <small id="dCheckout">-</small>
+            </div>
+
+            <div class="journey-line"></div>
+
+            <!-- ETD -->
+            <div class="journey-step" id="jETD">
+                <div class="journey-circle">🚢</div>
+                <div class="journey-title">ETD</div>
+                <small id="dETD">-</small>
+            </div>
+
+            <div class="journey-line"></div>
+
+            <!-- ATD -->
+            <div class="journey-step" id="jATD">
+                <div class="journey-circle">🌊</div>
+                <div class="journey-title">ATD</div>
+                <small id="dATD">-</small>
+            </div>
+
+            <div class="journey-line"></div>
+
+            <!-- ETA -->
+            <div class="journey-step" id="jETA">
+                <div class="journey-circle">📍</div>
+                <div class="journey-title">ETA</div>
+                <small id="dETA">-</small>
+            </div>
+
+            <div class="journey-line"></div>
+
+            <!-- ATA -->
+            <div class="journey-step" id="jATA">
+                <div class="journey-circle">✅</div>
+                <div class="journey-title">ATA</div>
+                <small id="dATA">-</small>
+            </div>
+
+            <div class="journey-line"></div>
+
+            <!-- DOORING -->
+            <div class="journey-step" id="jDoor">
+                <div class="journey-circle">🏪</div>
+                <div class="journey-title">DOORING</div>
+                <small id="dDoor">-</small>
+            </div>
+
+        </div>
+
+    </div>
+
+<div class="card-header bg-info text-white">
+
+    <h5 class="mb-0">
+
+<!-- =======================================================
+SHIPMENT PROGRESS
+======================================================= -->
+
+<div id="progressPanel"
+     class="card shadow-sm border-0 mt-4"
+     style="display:none;">
+
+    <div class="card-header bg-success text-white">
+
+        <h5 class="mb-0">
+
+            <i class="bi bi-speedometer2"></i>
+
+            Shipment Progress
+
+        </h5>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="d-flex justify-content-between mb-2">
+
+            <strong id="progressLabel">
+                Waiting
+            </strong>
+
+            <strong id="progressPercent">
+                0%
+            </strong>
+
+        </div>
+
+        <div class="progress"
+             style="height:16px;">
+
+            <div id="progressBar"
+                 class="progress-bar progress-bar-striped progress-bar-animated"
+                 style="width:0%">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+🗺 Shipment Map
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<div class="card-body">
+
+    <!-- Row 1 -->
+
+    <div class="row g-4">
+
+        <div class="col-lg-4 col-md-6">
+
+            <small class="text-muted text-uppercase">Vessel</small>
+
+            <h5 id="vesselName" class="mb-0 fw-bold"></h5>
+
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+
+            <small class="text-muted text-uppercase">Container</small>
+
+            <h5 id="vesselContainer"
+                class="mb-0 fw-bold font-monospace"></h5>
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <small class="text-muted text-uppercase">
+
+                Shipping Line
+
+            </small>
+
+            <h6 id="shippingLine" class="mb-0"></h6>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+<div class="row g-4">
+
+    <div class="col-lg-3 col-md-6">
+
+        <small class="text-muted text-uppercase">
+            Health Score
+        </small>
+
+        <h5 id="summaryHealth"
+            class="text-success fw-bold">
+            -
+        </h5>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <small class="text-muted text-uppercase">
+            Lead Time
+        </small>
+
+        <h5 id="summaryLeadtime"
+            class="text-primary fw-bold">
+            -
+        </h5>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <small class="text-muted text-uppercase">
+            Total SKU
+        </small>
+
+        <h5 id="summarySKU">
+            0
+        </h5>
+
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+
+        <small class="text-muted text-uppercase">
+            Total Qty
+        </small>
+
+        <h5 id="summaryQty">
+            0
+        </h5>
+
+    </div>
+
+</div>
+
+    <hr>
+
+    <!-- Row 2 -->
+
+    <div class="row g-4">
+
+        <div class="col-lg-2 col-md-4">
+
+            <small class="text-muted text-uppercase">
+
+                Carrier
+
+            </small>
+
+            <h6 id="carrier" class="mb-0"></h6>
+
+        </div>
+
+        <div class="col-lg-2 col-md-4">
+
+            <small class="text-muted text-uppercase">
+
+                Mode
+
+            </small>
+
+            <h6 id="moda" class="mb-0"></h6>
+
+        </div>
+
+        <div class="col-lg-2 col-md-4">
+
+            <small class="text-muted text-uppercase">
+
+                Ritase
+
+            </small>
+
+            <h6 id="ritase" class="mb-0"></h6>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <small class="text-muted text-uppercase">
+
+                Loading ID
+
+            </small>
+
+            <h6 id="loadingId"
+                class="mb-0 font-monospace"></h6>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <small class="text-muted text-uppercase">
+
+                Lead Time
+
+            </small>
+
+            <h6 id="leadTime"
+                class="mb-0 text-primary fw-bold"></h6>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- SHIPMENT MAP -->
+<!-- ===================================================== -->
+
+<div id="mapPanel"
+     class="card shadow-sm border-0 mt-4"
+     style="display:none;">
+
+    <div class="card-header bg-success text-white">
+
+        <h5 class="mb-0">
+
+            🗺 Shipment Map
+
+        </h5>
+
+    </div>
+
+    <div class="card-body p-2">
+
+        <div id="shipmentMap"
+             style="
+                width:100%;
+                height:500px;
+                border-radius:10px;
+             ">
+        </div>
+
+    </div>
+
+</div>
+
+<div id="detailOrderPanel"
+class="card shadow-sm mt-4"
+style="display:none;">
+
+<div class="card-header bg-warning">
+
+<h5>
+
+📦 Detail Order
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<table
+id="tblTrackingItem"
+class="table table-bordered table-hover">
+
+<thead>
+
+<tr>
+
+<th>No</th>
+
+<th>Order</th>
+
+<th>SKU</th>
+
+<th>Description</th>
+
+<th class="text-end">Qty</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- =======================================================
+SUMMARY BAR
+======================================================= -->
+
+<div class="row mt-3">
+
+    <div class="col-lg-3">
+
+        <div class="summary-box">
+
+            <small>Total CBM</small>
+
+            <h3 id="totalCBM">
+
+                0
+
+            </h3>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3">
+
+        <div class="summary-box">
+
+            <small>Total SKU</small>
+
+            <h3 id="totalSKU">
+
+                0
+
+            </h3>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3">
+
+        <div class="summary-box">
+
+            <small>Total Store</small>
+
+            <h3 id="totalStore">
+
+                0
+
+            </h3>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3">
+
+        <div class="summary-box">
+
+            <small>Average CBM / Order</small>
+
+            <h3 id="avgCBM">
+
+                0
+
+            </h3>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- =======================================================
+ANALYTICS DASHBOARD
+======================================================= -->
+
+<!-- =======================================================
+TOP PERFORMANCE
+======================================================= -->
+
+<!-- =======================================================
+LIVE MONITORING
+======================================================= -->
+
+<div class="row mt-4">
+
+    <div class="col-12">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-table"></i>
+
+                    Live Monitoring Order
+
+                </h5>
+
+                <span
+                    class="badge bg-success">
+
+                    REALTIME
+
+                </span>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table
+                        id="tblOrder"
+                        class="table table-striped table-hover align-middle">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>No</th>
+
+                                <th>Order</th>
+
+                                <th>Store</th>
+
+                                <th>Region</th>
+
+                                <th>Area</th>
+
+                                <th>SKU</th>
+
+                                <th>Qty</th>
+
+                                <th>CBM</th>
+
+                                <th>Status</th>
+
+                                <th>Order Date</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- Javascript -->
+<script src="js/app.js"></script>
+<script src="js/api.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/chart.js"></script>
+
+<!-- ===================================================== -->
+<!-- KPI DETAIL MODAL -->
+<!-- ===================================================== -->
+
+<div class="modal fade"
+     id="kpiModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-xl">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title"
+                    id="kpiModalTitle">
+
+                    KPI Detail
+
+                </h5>
+
+                <button
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="table-responsive">
+
+                    <table
+                        class="table table-striped table-hover">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>LC</th>
+                                <th>Container</th>
+                                <th>Vessel</th>
+                                <th>Region</th>
+                                <th>Store</th>
+                                <th>Status</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="kpiDetailBody">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Dashboard -->
+<script src="js/dashboard.js"></script>
+
+<!-- Tracking -->
+<script src="js/tracking.js"></script>
+
+</body>
+</html>
