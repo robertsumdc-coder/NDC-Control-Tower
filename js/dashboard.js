@@ -4,6 +4,8 @@ const Dashboard = {
 
     master:{
 
+        owners:[],
+
         regions:[],
 
         stores:[],
@@ -34,6 +36,9 @@ const Dashboard = {
         const status =
         document.getElementById("filterStatus")?.value || "";
 
+        const owner =
+        document.getElementById("filterOwner")?.value || "";
+
         if(start){
     url += "&startDate=" + encodeURIComponent(start);
 }
@@ -54,6 +59,9 @@ if(status){
     url += "&status=" + encodeURIComponent(status);
 }
 
+if(owner){
+    url += "&owner=" + encodeURIComponent(owner);
+}
 
         const res = await fetch(url);
         const json = await res.json();
@@ -63,25 +71,17 @@ if(status){
 this.renderSummary(json.summary || {});
 
 // Render Region hanya sekali
-if(this.master.regions.length === 0){
+this.master.owners = json.owners || [];
+this.renderOwner(this.master.owners);
 
-    this.master.regions = json.regions || [];
+this.master.regions = json.regions || [];
+this.renderRegion(this.master.regions);
 
-    this.renderRegion(this.master.regions);
+this.master.stores = json.stores || [];
+this.renderStore(this.master.stores);
 
-    }
-
-    if(this.master.stores.length === 0){
-
-        this.master.stores = json.stores || [];
-
-        this.renderStore(this.master.stores);
-
-        this.master.status = json.status || [];
-
-        this.renderStatus(this.master.status);
-
-}
+this.master.status = json.status || [];
+this.renderStatus(this.master.status);
 
 this.renderTable(this.data);
 
@@ -148,6 +148,35 @@ this.renderTable(this.data);
         this.filterStoreByRegion();
 
     };
+
+},
+
+renderOwner(owners){
+
+    const ddl =
+        document.getElementById("filterOwner");
+
+    if(!ddl) return;
+
+    ddl.innerHTML =
+        `<option value="">Semua BU</option>`;
+
+    owners.forEach(function(o){
+
+        ddl.innerHTML += `
+            <option value="${o}">
+                ${o}
+            </option>
+        `;
+
+    });
+
+     // Reload Region & Store saat BU berubah
+    ddl.onchange = () => {
+
+        Dashboard.init();
+
+     };   
 
 },
 

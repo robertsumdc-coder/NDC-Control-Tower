@@ -321,6 +321,10 @@ KPI
 FILTER PANEL
 ======================================================= -->
 
+<!-- =======================================================
+FILTER PANEL
+======================================================= -->
+
 <div class="row mt-4">
 
     <div class="col-12">
@@ -331,6 +335,7 @@ FILTER PANEL
 
                 <div class="row g-3 align-items-end">
 
+                    <!-- Periode Awal -->
                     <div class="col-lg-2 col-md-6">
 
                         <label class="form-label fw-semibold">
@@ -344,6 +349,7 @@ FILTER PANEL
 
                     </div>
 
+                    <!-- Periode Akhir -->
                     <div class="col-lg-2 col-md-6">
 
                         <label class="form-label fw-semibold">
@@ -357,6 +363,26 @@ FILTER PANEL
 
                     </div>
 
+                    <!-- Business Unit -->
+                    <div class="col-lg-2">
+
+                        <label class="form-label fw-semibold">
+                            Business Unit
+                        </label>
+
+                        <select
+                            id="filterOwner"
+                            class="form-select">
+
+                            <option value="">
+                                Semua BU
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- Region -->
                     <div class="col-lg-2">
 
                         <label class="form-label fw-semibold">
@@ -375,7 +401,8 @@ FILTER PANEL
 
                     </div>
 
-                    <div class="col-lg-3">
+                    <!-- Store -->
+                    <div class="col-lg-2">
 
                         <label class="form-label fw-semibold">
                             Store
@@ -393,7 +420,8 @@ FILTER PANEL
 
                     </div>
 
-                    <div class="col-lg-3">
+                    <!-- Status -->
+                    <div class="col-lg-2">
 
                         <label class="form-label fw-semibold">
                             Status
@@ -474,17 +502,13 @@ FILTER PANEL
                     <div class="col-lg-4 text-end">
 
                         <div class="small text-muted">
-
                             Last Update
-
                         </div>
 
                         <div
                             id="lastUpdate"
                             class="fw-bold">
-
                             -
-
                         </div>
 
                     </div>

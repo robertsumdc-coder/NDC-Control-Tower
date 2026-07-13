@@ -248,22 +248,77 @@ function renderShipmentInfo(s){
     // Command Center
     // ===========================
 
-    const summary   = window.currentSummary || {};
-    const leadtime  = window.currentLeadtime || {};
-    const health    = window.currentHealth || {};
+    const summary = window.currentSummary || {};
 
-    setText(
-        "summaryHealth",
-        (health.score ?? "-") + "%"
+const lt = Number(s.lt || 0);
+
+// ======================================
+// ACTUAL LEAD TIME
+// ======================================
+
+let elapsed = 0;
+
+if (s.checkOut) {
+
+    const start = new Date(s.checkOut);
+
+    let finish = new Date();
+
+    // Shipment sudah ATA
+    if (s.ata) {
+
+        finish = new Date(s.ata);
+
+    }
+
+    // Shipment sudah Dooring
+    if (s.dooring) {
+
+        finish = new Date(s.dooring);
+
+    }
+
+    elapsed = Math.ceil(
+
+        (finish - start) / 86400000
+
     );
 
-    setText(
-        "summaryLeadtime",
-        (leadtime.actual ?? "-") +
-        " / " +
-        (leadtime.target ?? "-") +
-        " Hari"
+    if (elapsed < 0) elapsed = 0;
+
+}
+let progress = 0;
+
+if (lt > 0) {
+
+    progress = Math.round(
+
+        (elapsed / lt) * 100
+
     );
+
+}
+
+// Maksimum 100%
+
+progress = Math.min(progress,100);
+
+// Tampilkan Health
+
+setText(
+    "summaryHealth",
+    progress + "%"
+);
+
+// Lead Time
+
+setText(
+    "summaryLeadtime",
+    elapsed +
+    " / " +
+    lt +
+    " Hari"
+);
 
     setText(
         "summarySKU",
@@ -1022,6 +1077,31 @@ function createVesselIcon(status){
     });
 
 }
+
+function normalizeCity(city){
+
+    city = String(city || "")
+        .toUpperCase()
+        .trim();
+
+    city = city
+        .replace("KOTA ","")
+        .replace("KABUPATEN ","")
+        .replace("KAB. ","")
+        .replace("KAB ","");
+
+    const alias = {
+
+        "MIMIKA":"TIMIKA",
+        "UJUNG PANDANG":"MAKASSAR",
+        "GORONTALO UTARA":"GORONTALO"
+
+    };
+
+    return alias[city] || city;
+
+}
+
 function renderShipmentMap() {
 
     const panel = document.getElementById("mapPanel");
@@ -1038,9 +1118,7 @@ function renderShipmentMap() {
 
     const destination =
         CITY_COORDINATES[
-            String(s.city || "")
-            .toUpperCase()
-            .trim()
+        normalizeCity(s.city)
         ];
 
     if(!origin || !destination){
