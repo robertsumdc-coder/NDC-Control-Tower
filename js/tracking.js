@@ -1091,10 +1091,12 @@ function normalizeCity(city){
         .trim();
 
     city = city
-        .replace("KOTA ","")
-        .replace("KABUPATEN ","")
-        .replace("KAB. ","")
-        .replace("KAB ","");
+        .replace(/KABUPATEN/g,"")
+        .replace(/KAB\./g,"")
+        .replace(/\bKAB\b/g,"")
+        .replace(/\bKOTA\b/g,"")
+        .replace(/\s+/g," ")
+        .trim();
 
     const alias = {
 
@@ -1126,6 +1128,10 @@ function renderShipmentMap() {
         CITY_COORDINATES[
         normalizeCity(s.city)
         ];
+
+        console.log("City :", s.city);
+        console.log("Normalize :", normalizeCity(s.city));
+        console.log("Destination :", destination);
 
     if(!origin || !destination){
 

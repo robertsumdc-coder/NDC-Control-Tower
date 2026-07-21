@@ -411,7 +411,7 @@ this.renderStatus(status);
 
                 <td>${r.shipTo || ""}</td>
 
-                <td>${r.city || ""}</td>
+                <td>${r.shipmentStatus || ""}</td>
 
             </tr>
             `;
