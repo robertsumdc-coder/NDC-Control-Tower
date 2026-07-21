@@ -988,13 +988,17 @@ const CITY_COORDINATES = {
 
     "KENDARI":[-3.9985,122.5120],
 
+    "KOLAKA":[-4.060276563494305, 121.61106728051391],
+
+    "BAUBAU":[-5.463741932986989, 122.59794689587399],
+
     "MANADO":[1.4748,124.8421],
 
     "GORONTALO":[0.5435,123.0568],
 
     "PAREPARE":[-4.0096,119.6255],
 
-    "PALOPO":[-2.9925,120.1960],
+    "PALOPO":[-2.9899637266154504, 120.18700806701358],
 
     "BITUNG":[1.4451,125.1824],
 
@@ -1005,6 +1009,8 @@ const CITY_COORDINATES = {
     "SORONG":[-0.8762,131.2558],
 
     "TIMIKA":[-4.5481,136.8874],
+
+    "TOMOHON":[1.315634818840846, 124.83763340746339],
 
     "JAYAPURA":[-2.5916,140.6690]
 
@@ -1174,16 +1180,19 @@ function getShipmentProgress(s){
 
     if(!shipmentMap){
 
-        shipmentMap = L.map("shipmentMap");
+    shipmentMap = L.map("shipmentMap");
 
-        L.tileLayer(
-            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            {
-                maxZoom:18
-            }
-        ).addTo(shipmentMap);
+    L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+        {
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
+            subdomains: 'abcd',
+            maxZoom:20
+        }
+    ).addTo(shipmentMap);
 
-    }
+}
+
 
     //--------------------------------------------------
     // Hapus marker lama

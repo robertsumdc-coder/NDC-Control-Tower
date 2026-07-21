@@ -16,11 +16,29 @@ const Dashboard = {
 
         },
 
+        masterLoaded:false,
+
     api: "https://script.google.com/macros/s/AKfycbxWIAkNDi185Vwc7D6-i1If0emX4SSyfFcWWfmr8k3bEn6u20FYUv-obmBY4z15SkFaHA/exec?action=dashboard",
 
     async init() {
 
         console.log("Loading Dashboard...");
+
+        // ==============================
+        // Simpan filter yang sedang dipilih
+        // ==============================
+
+    const currentFilter = {
+
+    owner: document.getElementById("filterOwner")?.value || "",
+
+    region: document.getElementById("filterRegion")?.value || "",
+
+    store: document.getElementById("filterStore")?.value || "",
+
+    status: document.getElementById("filterStatus")?.value || ""
+
+    };
 
         let url = this.api;
 
@@ -70,20 +88,43 @@ if(owner){
 
 this.renderSummary(json.summary || {});
 
-// Render Region hanya sekali
-this.master.owners = json.owners || [];
-this.renderOwner(this.master.owners);
+// ======================================
+// Load master filter hanya sekali
+// ======================================
 
-this.master.regions = json.regions || [];
-this.renderRegion(this.master.regions);
+if(!this.masterLoaded){
 
-this.master.stores = json.stores || [];
-this.renderStore(this.master.stores);
+    this.master.owners = json.owners || [];
+    this.master.regions = json.regions || [];
+    this.master.stores = json.stores || [];
+    this.master.status = json.status || [];
 
-this.master.status = json.status || [];
-this.renderStatus(this.master.status);
+    this.renderOwner(this.master.owners);
+    this.renderRegion(this.master.regions);
+    this.renderStore(this.master.stores);
+    this.renderStatus(this.master.status);
+
+    this.masterLoaded = true;
+
+}
 
 this.renderTable(this.data);
+
+// ==============================
+// Kembalikan pilihan filter user
+// ==============================
+
+document.getElementById("filterOwner").value =
+    currentFilter.owner;
+
+document.getElementById("filterRegion").value =
+    currentFilter.region;
+
+document.getElementById("filterStore").value =
+    currentFilter.store;
+
+document.getElementById("filterStatus").value =
+    currentFilter.status;
 
     },
 
