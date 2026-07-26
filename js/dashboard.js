@@ -18,7 +18,18 @@ const Dashboard = {
 
         masterLoaded:false,
 
-    api: "https://script.google.com/macros/s/AKfycbxWIAkNDi185Vwc7D6-i1If0emX4SSyfFcWWfmr8k3bEn6u20FYUv-obmBY4z15SkFaHA/exec?action=dashboard",
+    api:{
+
+    summary:
+    "https://script.google.com/macros/s/AKfycbx53Ec75YAAl3sScKE97CpmC80Fg3_C3zgUakTBZcdpv0dPY4y6ziSbyJdo6ZZwQt3sdQ/exec?action=summary",
+
+    master:
+    "https://script.google.com/macros/s/AKfycbx53Ec75YAAl3sScKE97CpmC80Fg3_C3zgUakTBZcdpv0dPY4y6ziSbyJdo6ZZwQt3sdQ/exec?action=master",
+
+    table:
+    "https://script.google.com/macros/s/AKfycbx53Ec75YAAl3sScKE97CpmC80Fg3_C3zgUakTBZcdpv0dPY4y6ziSbyJdo6ZZwQt3sdQ/exec?action=table"
+
+},
 
     async init() {
 
@@ -40,58 +51,34 @@ const Dashboard = {
 
     };
 
-        let url = this.api;
+//----------------------------------------------------
+// Load KPI
+//----------------------------------------------------
 
-        const start = document.getElementById("startDate")?.value;
-        const end = document.getElementById("endDate")?.value;
+await this.loadSummary();
 
-        const region =
-        document.getElementById("filterRegion")?.value || "";
+//----------------------------------------------------
+// Load Master Filter
+//----------------------------------------------------
 
-        const store =
-        document.getElementById("filterStore")?.value || "";
+await this.loadMaster();
 
-        const status =
-        document.getElementById("filterStatus")?.value || "";
+//------------------------------------------
+// Load Table (Background)
+//------------------------------------------
 
-        const owner =
-        document.getElementById("filterOwner")?.value || "";
+setTimeout(() => {
 
-        if(start){
-    url += "&startDate=" + encodeURIComponent(start);
-}
+    this.loadTable(currentFilter);
 
-if(end){
-    url += "&endDate=" + encodeURIComponent(end);
-}
+},100);
 
-if(region){
-    url += "&region=" + encodeURIComponent(region);
-}
-
-if(store){
-    url += "&store=" + encodeURIComponent(store);
-}
-
-if(status){
-    url += "&status=" + encodeURIComponent(status);
-}
-
-if(owner){
-    url += "&owner=" + encodeURIComponent(owner);
-}
-
-        const res = await fetch(url);
-        const json = await res.json();
-
-        this.data = json.data || [];
-
-this.renderSummary(json.summary || {});
 
 // ======================================
 // Load master filter hanya sekali
 // ======================================
 
+/*
 if(!this.masterLoaded){
 
     this.master.owners = json.owners || [];
@@ -105,10 +92,8 @@ if(!this.masterLoaded){
     this.renderStatus(this.master.status);
 
     this.masterLoaded = true;
-
 }
-
-this.renderTable(this.data);
+*/
 
 // ==============================
 // Kembalikan pilihan filter user
@@ -128,21 +113,151 @@ document.getElementById("filterStatus").value =
 
     },
 
+    //--------------------------------------------------
+// LOAD KPI
+//--------------------------------------------------
+
+async loadSummary(filter = {}){
+
+    const params = new URLSearchParams(filter);
+
+    const res =
+        await fetch(
+            this.api.summary +
+            "&" +
+            params.toString()
+        );
+
+    const json =
+        await res.json();
+
+    console.log("Summary API", json);
+
+    this.renderSummary(json.summary);
+
+},
+
+//--------------------------------------------------
+// LOAD MASTER FILTER
+//--------------------------------------------------
+
+async loadMaster(){
+
+    if(this.masterLoaded){
+
+        return;
+
+    }
+
+    const res =
+        await fetch(this.api.master);
+
+    const json =
+        await res.json();
+
+    console.log("Master API",json);
+
+    this.master.owners =
+        json.owner || [];
+
+    this.master.regions =
+        json.region || [];
+
+    this.master.stores =
+        json.store || [];
+
+    this.master.status =
+        json.status || [];
+
+    this.renderOwner(this.master.owners);
+
+    this.renderRegion(this.master.regions);
+
+    this.renderStore(this.master.stores);
+
+    this.renderStatus(this.master.status);
+
+    this.masterLoaded=true;
+
+},
+
+async loadTable(filter){
+
+    const table = await API.table({
+
+        startDate:
+            document.getElementById("startDate")?.value,
+
+        endDate:
+            document.getElementById("endDate")?.value,
+
+        owner:
+            filter.owner,
+
+        region:
+            filter.region,
+
+        store:
+            filter.store,
+
+        status:
+            filter.status
+
+    });
+
+    this.data = table.data || [];
+
+    console.log(this.data[0]);
+
+    this.renderTable(this.data);
+
+},
+
     //----------------------------------------------------
     // KPI
     //----------------------------------------------------
 
-    renderSummary(summary) {
+    renderSummary(summary){
 
-        this.setKPI("kpiOrder", summary.totalOrder || 0, "order");
-        this.setKPI("kpiShipment", summary.totalShipment || 0, "shipment");
-        this.setKPI("kpiPending", summary.toPort || 0, "toPort");
-        this.setKPI("kpiSailing", summary.sailing || 0, "sailing");
-        this.setKPI("kpiDelivered", summary.delivered || 0, "delivered");
-        this.setKPI("kpiWaitingDooring",summary.waitingDooring || 0,"awaitingDooring"
-);
+    if(!summary) return;
 
-    },
+    this.setKPI(
+        "kpiOrder",
+        summary.TOTAL_ORDER || 0,
+        "order"
+    );
+
+    this.setKPI(
+        "kpiShipment",
+        summary.TOTAL_SHIPMENT || 0,
+        "shipment"
+    );
+
+    this.setKPI(
+        "kpiPending",
+        summary.TO_PORT || 0,
+        "toPort"
+    );
+
+    this.setKPI(
+        "kpiSailing",
+        summary.SAILING || 0,
+        "sailing"
+    );
+
+    this.setKPI(
+        "kpiDelivered",
+        summary.DELIVERED || 0,
+        "delivered"
+    );
+
+    this.setKPI(
+        "kpiWaitingDooring",
+        summary.WAITING_DOORING || 0,
+        "awaitingDooring"
+    );
+
+},
 
     setKPI(id, value, type) {
 
@@ -213,11 +328,21 @@ renderOwner(owners){
     });
 
      // Reload Region & Store saat BU berubah
-    ddl.onchange = () => {
+   ddl.onchange = () => {
 
-        Dashboard.init();
+    Dashboard.loadTable({
 
-     };   
+        owner: ddl.value,
+
+        region: document.getElementById("filterRegion").value,
+
+        store: document.getElementById("filterStore").value,
+
+        status: document.getElementById("filterStatus").value
+
+    });
+
+}; 
 
 },
 
@@ -255,8 +380,8 @@ renderStore(stores){
     stores.forEach(function(s){
 
         ddl.innerHTML += `
-            <option value="${s.store}">
-                ${s.store}
+            <option value="${s}">
+                ${s}
             </option>
         `;
 
@@ -264,33 +389,9 @@ renderStore(stores){
 
 },
 
-filterStoreByRegion(){
+   filterStoreByRegion(){
 
-    const region =
-        document.getElementById("filterRegion").value;
-
-    if(!region){
-
-        this.renderStore(this.master.stores);
-
-        const status = [...new Set(
-    stores.map(s => s.status).filter(Boolean)
-)];
-
-this.renderStatus(status);
-
-        return;
-
-    }
-
-    const stores =
-        this.master.stores.filter(s=>
-
-            s.region===region
-
-        );
-
-    this.renderStore(stores);
+    this.renderStore(this.master.stores);
 
 },
     //----------------------------------------------------
@@ -509,6 +610,30 @@ document
     .getElementById("btnSearch")
     ?.addEventListener("click", () => {
 
-        Dashboard.init();
+        const filter = {
+
+            startDate:
+                document.getElementById("startDate").value,
+
+            endDate:
+                document.getElementById("endDate").value,
+
+            owner:
+                document.getElementById("filterOwner").value,
+
+            region:
+                document.getElementById("filterRegion").value,
+
+            store:
+                document.getElementById("filterStore").value,
+
+            status:
+                document.getElementById("filterStatus").value
+
+        };
+
+        Dashboard.loadSummary(filter);
+
+        Dashboard.loadTable(filter);
 
     });

@@ -64,16 +64,12 @@ LOADING
 
     <div class="loader"></div>
 
-    <h3>
-
+    <h3 id="loadingTitle">
         NDC CONTROL TOWER
-
     </h3>
 
-    <p>
-
+    <p id="loadingMessage">
         Shipment Tracking Portal
-
     </p>
 
 </div>
@@ -130,7 +126,7 @@ HEADER
 
             <strong>
 
-                1.0.0
+                3.0.0
 
             </strong>
 
@@ -1506,6 +1502,45 @@ LIVE MONITORING
                     </table>
 
                 </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- LOADING MODAL -->
+<!-- ===================================================== -->
+
+<div class="modal fade"
+     id="loadingModal"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content border-0 shadow">
+
+            <div class="modal-body text-center py-5">
+
+                <div class="spinner-border text-primary mb-4"
+                     style="width:4rem;height:4rem;">
+                </div>
+
+                <h4 id="loadingTitle">
+                    NDC CONTROL TOWER
+                </h4>
+
+                <p id="loadingMessage"
+                   class="text-muted mb-0">
+
+                    Sedang mencari data shipment...
+
+                </p>
 
             </div>
 

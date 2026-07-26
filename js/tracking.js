@@ -30,6 +30,31 @@ function initTracking() {
 
 }
 
+function showLoading(title, message) {
+
+    document.getElementById("loadingTitle").innerText = title;
+    document.getElementById("loadingMessage").innerText = message;
+
+    const modal = new bootstrap.Modal(
+        document.getElementById("loadingModal")
+    );
+
+    modal.show();
+
+}
+
+function hideLoading() {
+
+    const modalEl = document.getElementById("loadingModal");
+
+    const modal = bootstrap.Modal.getInstance(modalEl);
+
+    if (modal) {
+        modal.hide();
+    }
+
+}
+
 // ======================================================
 // SEARCH SHIPMENT
 // ======================================================
@@ -51,14 +76,19 @@ async function searchShipment() {
 
     try {
 
-        document.body.style.cursor = "wait";
+    showLoading(
+        "NDC CONTROL TOWER",
+        "Sedang mencari data shipment..."
+    );
 
-        const result = await API.tracking(keyword);
+    document.body.style.cursor = "wait";
+
+    const result = await API.tracking(keyword);
 
         console.log("Tracking Result", result);
     if (!result.success) {
 
-    showNotFound();
+    showNotFound(result);
 
     return;
 
@@ -80,6 +110,16 @@ console.log(window.currentJourney);
 // Render
 renderShipment(result.data);
 
+document
+    .getElementById("trackingPanel")
+    ?.scrollIntoView({
+
+        behavior: "smooth",
+
+        block: "start"
+
+    });
+
     }
 
     catch (err) {
@@ -93,6 +133,8 @@ renderShipment(result.data);
     finally {
 
         document.body.style.cursor = "default";
+
+        hideLoading();
 
     }
 
@@ -916,20 +958,85 @@ function resetTracking(){
 // NOT FOUND
 // ======================================================
 
-function showNotFound(){
+function showNotFound(result){
 
     resetTracking();
 
     const panel = document.getElementById("notFoundPanel");
 
-    if(panel){
+    if(!panel) return;
 
-        panel.style.display = "block";
+    panel.style.display = "block";
+
+    //--------------------------------------
+    // SCROLL OTOMATIS KE PANEL
+    //--------------------------------------
+
+    panel.scrollIntoView({
+
+        behavior: "smooth",
+
+        block: "start"
+
+    });
+
+    //--------------------------------------
+    // DEFAULT = PLANNING
+    //--------------------------------------
+
+    let icon = "📦";
+
+    let title = "Order Dalam Proses Planning";
+
+    let textClass = "text-warning";
+
+    let alertClass = "alert-warning";
+
+    let message1 =
+        "Nomor yang Anda masukkan belum ditemukan pada data shipment.";
+
+    let message2 =
+        "Kemungkinan order masih dalam proses <strong>Planning NDC Sidoarjo</strong>.<br><br>" +
+        "Silakan menghubungi Planner untuk informasi lebih lanjut.";
+
+    //--------------------------------------
+    // WAITING VESSEL
+    //--------------------------------------
+
+    if(result && result.status === "WAITING_VESSEL"){
+
+        icon = "🚢";
+
+        title = "Barang Sudah Diloading";
+
+        textClass = "text-success";
+
+        alertClass = "alert-info";
+
+        message1 =
+            "Order telah selesai diproses di NDC Sidoarjo.";
+
+        message2 =
+            "Saat ini barang sedang menunggu jadwal keberangkatan kapal.<br><br>" +
+            "Informasi shipment akan segera diperbarui.";
 
     }
 
-}
+    panel.querySelector(".display-1").innerHTML = icon;
 
+    panel.querySelector("h3").className = textClass;
+
+    panel.querySelector("h3").innerHTML = title;
+
+    panel.querySelector("p").innerHTML = message1;
+
+    const alert = panel.querySelector(".alert");
+
+    alert.className = "alert " + alertClass;
+
+    alert.innerHTML = message2;
+
+}
 // ======================================================
 // UPDATE SUMMARY
 // ======================================================

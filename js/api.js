@@ -4,7 +4,7 @@
 // ==========================================
 
 const WEBAPP =
-"https://script.google.com/macros/s/AKfycbxWIAkNDi185Vwc7D6-i1If0emX4SSyfFcWWfmr8k3bEn6u20FYUv-obmBY4z15SkFaHA/exec";
+"https://script.google.com/macros/s/AKfycbx53Ec75YAAl3sScKE97CpmC80Fg3_C3zgUakTBZcdpv0dPY4y6ziSbyJdo6ZZwQt3sdQ/exec";
 
 const API = {
 
@@ -15,6 +15,52 @@ const API = {
         );
 
         return await response.json();
+
+    },
+
+    async summary(){
+
+    const response = await fetch(
+
+        WEBAPP + "?action=summary"
+
+    );
+
+    return await response.json();
+
+    },
+
+    async master(){
+
+    const response = await fetch(
+
+        WEBAPP + "?action=master"
+
+    );
+
+    return await response.json();
+
+    },
+
+    async table(filter = {}){
+
+    let url = WEBAPP + "?action=table";
+
+    Object.keys(filter).forEach(function(key){
+
+        if(filter[key]){
+
+            url += "&" + key + "=" +
+
+                encodeURIComponent(filter[key]);
+
+        }
+
+    });
+
+    const response = await fetch(url);
+
+    return await response.json();
 
     },
 
